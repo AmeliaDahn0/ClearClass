@@ -11,6 +11,10 @@
     {
       "src": "server.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "src/scrapers/membeanscraper/requirements.txt",
+      "use": "@vercel/python"
     }
   ],
   "routes": [
