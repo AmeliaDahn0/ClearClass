@@ -5,16 +5,13 @@
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "build"
+        "distDir": "build",
+        "buildCommand": "npm run build"
       }
     },
     {
       "src": "server.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "src/scrapers/membeanscraper/requirements.txt",
-      "use": "@vercel/python"
     }
   ],
   "routes": [
@@ -23,8 +20,7 @@
       "dest": "/server.js"
     },
     {
-      "src": "/scrapers/(.*)",
-      "dest": "/src/scrapers/$1"
+      "handle": "filesystem"
     },
     {
       "src": "/(.*)",
