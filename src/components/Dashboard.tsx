@@ -13,14 +13,36 @@ import {
   Alert,
   Container,
   useTheme,
+  IconButton,
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { StudentData } from '../types/types';
+import MetricSettings, { MetricSettings as MetricSettingsType } from './MetricSettings';
 
 interface DashboardProps {
   students: StudentData[];
   loading: boolean;
   error: string | null;
+}
+
+interface Task {
+  id: string;
+  type: string;
+  name: string | null;
+  completionTime: string;
+  points: {
+    earned: number;
+    possible: number;
+    rawText: string;
+  };
+  progress: string;
+}
+
+interface DailyActivity {
+  date: string;
+  dailyXP: string;
+  tasks: Task[];
 }
 
 // Function to get the last name from a full name
@@ -55,6 +77,17 @@ const Dashboard: React.FC<DashboardProps> = ({ students, loading, error }) => {
   const theme = useTheme();
   const [timeframe, setTimeframe] = useState('daily');
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [metricSettings, setMetricSettings] = useState<MetricSettingsType>({
+    mathAcademy: {
+      metric: 'xp',
+      target: 70
+    },
+    membean: {
+      metric: 'minutes',
+      target: 15
+    }
+  });
 
   useEffect(() => {
     console.log('Dashboard mounted/updated with students:', students);
@@ -93,6 +126,98 @@ const Dashboard: React.FC<DashboardProps> = ({ students, loading, error }) => {
     setSelectedDate(event.target.value);
   };
 
+  const handleSettingsSave = (newSettings: MetricSettingsType) => {
+    setMetricSettings(newSettings);
+    // Save to localStorage for persistence
+    localStorage.setItem('metricSettings', JSON.stringify(newSettings));
+  };
+
+  useEffect(() => {
+    // Load settings from localStorage on mount
+    const savedSettings = localStorage.getItem('metricSettings');
+    if (savedSettings) {
+      setMetricSettings(JSON.parse(savedSettings));
+    }
+  }, []);
+
+  const calculateProgress = (student: StudentData, platform: string) => {
+    if (platform === 'math-academy') {
+      const today = new Date();
+      const todayKey = today.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+      const todayActivityEntry = Object.entries(student.mathAcademy?.dailyActivity || {}).find(([date]) => date.startsWith(todayKey));
+      const todayActivity = todayActivityEntry ? todayActivityEntry[1] as DailyActivity : null;
+      
+      switch (metricSettings.mathAcademy.metric) {
+        case 'xp':
+          const dailyXP = todayActivity?.dailyXP || '0/70 XP';
+          const [earned] = (dailyXP || '0/70 XP').split(/[ /]/);
+          return Math.min(Math.round((parseInt(earned) / metricSettings.mathAcademy.target) * 100), 100);
+        case 'assessments':
+          const assessments = todayActivity?.tasks?.filter((task: Task) => task.type === 'Assessment') || [];
+          return Math.min(Math.round((assessments.length / metricSettings.mathAcademy.target) * 100), 100);
+        case 'tasks':
+          const tasks = todayActivity?.tasks || [];
+          return Math.min(Math.round((tasks.length / metricSettings.mathAcademy.target) * 100), 100);
+        default:
+          return 0;
+      }
+    } else if (platform === 'membean') {
+      switch (metricSettings.membean.metric) {
+        case 'minutes':
+          const minutesTrained = student.tabs_data?.Reports?.minutes_trained || 0;
+          return Math.min(Math.round((minutesTrained / metricSettings.membean.target) * 100), 100);
+        case 'words':
+          const wordsSeen = student.current_data?.words_seen || 0;
+          return Math.min(Math.round((wordsSeen / metricSettings.membean.target) * 100), 100);
+        case 'accuracy':
+          const accuracy = parseInt(student.tabs_data?.Reports?.accuracy || '0');
+          return Math.min(Math.round((accuracy / metricSettings.membean.target) * 100), 100);
+        default:
+          return 0;
+      }
+    }
+    return 0;
+  };
+
+  const getDisplayValue = (student: StudentData, platform: string) => {
+    if (platform === 'math-academy') {
+      const today = new Date();
+      const todayKey = today.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+      const todayActivityEntry = Object.entries(student.mathAcademy?.dailyActivity || {}).find(([date]) => date.startsWith(todayKey));
+      const todayActivity = todayActivityEntry ? todayActivityEntry[1] as DailyActivity : null;
+      
+      switch (metricSettings.mathAcademy.metric) {
+        case 'xp':
+          const dailyXP = todayActivity?.dailyXP || '0/70 XP';
+          const [earned] = (dailyXP || '0/70 XP').split(/[ /]/);
+          return `${earned}/${metricSettings.mathAcademy.target} XP`;
+        case 'assessments':
+          const assessments = todayActivity?.tasks?.filter((task: Task) => task.type === 'Assessment') || [];
+          return `${assessments.length}/${metricSettings.mathAcademy.target} Assessments`;
+        case 'tasks':
+          const tasks = todayActivity?.tasks || [];
+          return `${tasks.length}/${metricSettings.membean.target} Tasks`;
+        default:
+          return '0/0';
+      }
+    } else if (platform === 'membean') {
+      switch (metricSettings.membean.metric) {
+        case 'minutes':
+          const minutesTrained = student.tabs_data?.Reports?.minutes_trained || 0;
+          return `${minutesTrained}/${metricSettings.membean.target} minutes`;
+        case 'words':
+          const wordsSeen = student.current_data?.words_seen || 0;
+          return `${wordsSeen}/${metricSettings.membean.target} words`;
+        case 'accuracy':
+          const accuracy = student.tabs_data?.Reports?.accuracy || '0%';
+          return `${accuracy}/${metricSettings.membean.target}%`;
+        default:
+          return '0/0';
+      }
+    }
+    return '0/0';
+  };
+
   if (loading) {
     console.log('Dashboard is in loading state');
     return (
@@ -124,12 +249,40 @@ const Dashboard: React.FC<DashboardProps> = ({ students, loading, error }) => {
     // Determine the appropriate color based on progress
     const getProgressColor = () => {
       if (platform === 'math-academy') {
-        return progress >= 100 ? '#4CAF50' : '#f44336';  // green if >= 70XP (100%), red if < 70XP
+        const target = metricSettings.mathAcademy.target;
+        return progress >= 100 ? '#4CAF50' : '#f44336';
       }
       return progress >= 80 ? '#4CAF50' : progress >= 60 ? '#FFA726' : '#f44336';
     };
 
     const progressColor = getProgressColor();
+
+    const getDisplayValue = () => {
+      if (platform === 'math-academy') {
+        switch (metricSettings.mathAcademy.metric) {
+          case 'xp':
+            return dailyXP;
+          case 'assessments':
+            return `${progress}%`;
+          case 'tasks':
+            return `${progress}%`;
+          default:
+            return dailyXP;
+        }
+      } else if (platform === 'membean') {
+        switch (metricSettings.membean.metric) {
+          case 'minutes':
+            return dailyGoal;
+          case 'words':
+            return `${progress}%`;
+          case 'accuracy':
+            return `${progress}%`;
+          default:
+            return dailyGoal;
+        }
+      }
+      return dailyXP || dailyGoal;
+    };
 
     return (
       <Card 
@@ -228,47 +381,17 @@ const Dashboard: React.FC<DashboardProps> = ({ students, loading, error }) => {
           {title}
         </Typography>
 
-        {platform === 'math-academy' && dailyXP && (
-          <Typography
-            variant="h4"
-            sx={{
-              color: progressColor,
-              fontWeight: 'bold',
-              mb: 1,
-              textAlign: 'center',
-            }}
-          >
-            {dailyXP}
-          </Typography>
-        )}
-
-        {platform === 'membean' && dailyGoal && (
-          <Typography
-            variant="h4"
-            sx={{
-              color: goalColor || progressColor,
-              fontWeight: 'bold',
-              mb: 1,
-              textAlign: 'center',
-            }}
-          >
-            {dailyGoal}
-          </Typography>
-        )}
-
-        {platform === 'rocket-math' && dailyGoal && (
-          <Typography
-            variant="h4"
-            sx={{
-              color: goalColor || progressColor,
-              fontWeight: 'bold',
-              mb: 1,
-              textAlign: 'center',
-            }}
-          >
-            {dailyGoal}
-          </Typography>
-        )}
+        <Typography
+          variant="h4"
+          sx={{
+            color: progressColor,
+            fontWeight: 'bold',
+            mb: 1,
+            textAlign: 'center',
+          }}
+        >
+          {getDisplayValue()}
+        </Typography>
 
         <Divider sx={{ width: '50%', my: 1, borderColor: `${progressColor}30` }} />
 
@@ -316,169 +439,143 @@ const Dashboard: React.FC<DashboardProps> = ({ students, loading, error }) => {
   };
 
   return (
-    <Box sx={{ 
-      minHeight: '100vh',
-      background: `linear-gradient(120deg, ${theme.palette.primary.light}15, ${theme.palette.secondary.light}15)`,
-      pt: 3, 
-      pb: 6
-    }}>
-      <Container maxWidth="xl">
-        <Paper 
-          elevation={0} 
-          sx={{ 
-            p: 3, 
-            mb: 4, 
-            borderRadius: 2,
-            background: `rgba(255, 255, 255, 0.9)`,
-            backdropFilter: 'blur(10px)',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center', 
-            flexWrap: 'wrap', 
-            gap: 2 
-          }}
-        >
-          <Typography 
-            variant="h4" 
-            component="h1" 
-            sx={{ 
-              fontWeight: 'bold',
-              color: theme.palette.primary.main,
-              textShadow: '0 2px 4px rgba(0,0,0,0.05)',
-            }}
-          >
-            ClearClass
-          </Typography>
-        </Paper>
+    <Container maxWidth="xl" sx={{ py: 4 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          ClearClass
+        </Typography>
+        <IconButton onClick={() => setSettingsOpen(true)} color="primary">
+          <SettingsIcon />
+        </IconButton>
+      </Box>
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          {sortedStudents.map((student) => {
-            console.log('Rendering student card:', {
-              name: student.name,
-              membeanData: {
-                level: student.current_data?.level,
-                minutesTrained: student.tabs_data?.Reports?.minutes_trained,
-                accuracy: student.tabs_data?.Reports?.accuracy
-              }
-            });
-            
-            return (
-              <Paper 
-                key={student.id}
-                id={`student-card-${student.id}`}
-                elevation={0}
-                sx={{ 
-                  p: 4, 
-                  borderRadius: 2,
-                  background: `rgba(255, 255, 255, 0.8)`,
-                  backdropFilter: 'blur(10px)',
-                  boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
-                  mb: 2,
-                }}
-              >
-                <Box sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
-                  <Typography 
-                    variant="h5" 
-                    component="h2" 
-                    sx={{ 
-                      fontWeight: 'bold',
-                      position: 'relative',
-                      display: 'inline-block',
-                      '&:after': {
-                        content: '""',
-                        position: 'absolute',
-                        width: '40%',
-                        height: '4px',
-                        background: theme.palette.primary.main,
-                        bottom: '-8px',
-                        left: 0,
-                        borderRadius: '2px',
-                      }
-                    }}
-                  >
-                    {student.name}
-                  </Typography>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        {sortedStudents.map((student) => {
+          console.log('Rendering student card:', {
+            name: student.name,
+            membeanData: {
+              level: student.current_data?.level,
+              minutesTrained: student.tabs_data?.Reports?.minutes_trained,
+              accuracy: student.tabs_data?.Reports?.accuracy
+            }
+          });
+          
+          return (
+            <Paper 
+              key={student.id}
+              id={`student-card-${student.id}`}
+              elevation={0}
+              sx={{ 
+                p: 4, 
+                borderRadius: 2,
+                background: `rgba(255, 255, 255, 0.8)`,
+                backdropFilter: 'blur(10px)',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
+                mb: 2,
+              }}
+            >
+              <Box sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
+                <Typography 
+                  variant="h5" 
+                  component="h2" 
+                  sx={{ 
+                    fontWeight: 'bold',
+                    position: 'relative',
+                    display: 'inline-block',
+                    '&:after': {
+                      content: '""',
+                      position: 'absolute',
+                      width: '40%',
+                      height: '4px',
+                      background: theme.palette.primary.main,
+                      bottom: '-8px',
+                      left: 0,
+                      borderRadius: '2px',
+                    }
+                  }}
+                >
+                  {student.name}
+                </Typography>
+              </Box>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'stretch', gap: 4 }}>
+                {/* Math Academy Card */}
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'stretch' }}>
+                  {(() => {
+                    const details = [
+                      `Course: ${student.mathAcademy?.courseInfo?.name || 'Not enrolled'}`,
+                      `Last Activity: ${student.mathAcademy?.lastActivity || 'Never'}`
+                    ].join('\n');
+                    return (
+                      <SubjectCard
+                        title="Math Academy"
+                        progress={calculateProgress(student, 'math-academy')}
+                        details={details}
+                        studentId={student.id}
+                        platform="math-academy"
+                        dailyXP={getDisplayValue(student, 'math-academy')}
+                      />
+                    );
+                  })()}
                 </Box>
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'stretch', gap: 4 }}>
-                  {/* Math Academy Card */}
-                  <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'stretch' }}>
-                    {(() => {
-                      const today = new Date();
-                      const todayKey = today.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-                      const todayActivityEntry = Object.entries(student.mathAcademy?.dailyActivity || {}).find(([date]) => date.startsWith(todayKey));
-                      const dailyXP = todayActivityEntry ? todayActivityEntry[1].dailyXP : '0/70 XP';
-                      const [earned] = (dailyXP || '0/70 XP').split(/[ /]/);
-                      const details = [
-                        `Course: ${student.mathAcademy?.courseInfo?.name || 'Not enrolled'}`,
-                        `Last Activity: ${student.mathAcademy?.lastActivity || 'Never'}`
-                      ].join('\n');
-                      return (
-                        <SubjectCard
-                          title="Math Academy"
-                          progress={Math.min(Math.round((parseInt(earned) / 70) * 100), 100)}
-                          details={details}
-                          studentId={student.id}
-                          platform="math-academy"
-                          dailyXP={dailyXP}
-                        />
-                      );
-                    })()}
-                  </Box>
 
-                  {/* Membean Card */}
-                  <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'stretch' }}>
-                    {(() => {
-                      const minutesTrained = student.tabs_data?.Reports?.minutes_trained || 0;
-                      const goalMet = minutesTrained >= 15;
-                      const goalColor = goalMet ? '#4CAF50' : '#f44336';
-                      const details = [
-                        `Level: ${student.current_data?.level || 'Not Started'}`,
-                        `Accuracy: ${student.tabs_data?.Reports?.accuracy || '0%'}`,
-                        `Last Trained: ${student.current_data?.last_trained || 'Never'}`
-                      ].join('\n');
-                      return (
-                        <SubjectCard
-                          title="Membean"
-                          progress={Math.min(Math.round((minutesTrained / 15) * 100), 100)}
-                          details={details}
-                          studentId={student.id}
-                          platform="membean"
-                          dailyGoal={`${minutesTrained} minutes`}
-                          goalColor={goalColor}
-                        />
-                      );
-                    })()}
-                  </Box>
-
-                  {/* Fast Math Card */}
-                  <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'stretch' }}>
-                    <SubjectCard
-                      title="Fast Math"
-                      progress={0}
-                      details={"Coming soon!"}
-                      studentId={student.id}
-                      platform="fast-math"
-                    />
-                  </Box>
-
-                  {/* AlphaRead Card */}
-                  <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'stretch' }}>
-                    <SubjectCard
-                      title="AlphaRead"
-                      progress={0}
-                      details={"Coming soon!"}
-                      studentId={student.id}
-                      platform="alpharead"
-                    />
-                  </Box>
+                {/* Membean Card */}
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'stretch' }}>
+                  {(() => {
+                    const details = [
+                      `Level: ${student.current_data?.level || 'Not Started'}`,
+                      `Accuracy: ${student.tabs_data?.Reports?.accuracy || '0%'}`,
+                      `Last Trained: ${student.current_data?.last_trained || 'Never'}`
+                    ].join('\n');
+                    const progress = calculateProgress(student, 'membean');
+                    const goalColor = progress >= 100 ? '#4CAF50' : '#f44336';
+                    return (
+                      <SubjectCard
+                        title="Membean"
+                        progress={progress}
+                        details={details}
+                        studentId={student.id}
+                        platform="membean"
+                        dailyGoal={getDisplayValue(student, 'membean')}
+                        goalColor={goalColor}
+                      />
+                    );
+                  })()}
                 </Box>
-              </Paper>
-            );
-          })}
-        </Box>
-      </Container>
-    </Box>
+
+                {/* Fast Math Card */}
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'stretch' }}>
+                  <SubjectCard
+                    title="Fast Math"
+                    progress={0}
+                    details={"Coming soon!"}
+                    studentId={student.id}
+                    platform="fast-math"
+                  />
+                </Box>
+
+                {/* AlphaRead Card */}
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'stretch' }}>
+                  <SubjectCard
+                    title="AlphaRead"
+                    progress={0}
+                    details={"Coming soon!"}
+                    studentId={student.id}
+                    platform="alpharead"
+                  />
+                </Box>
+              </Box>
+            </Paper>
+          );
+        })}
+      </Box>
+
+      <MetricSettings
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        settings={metricSettings}
+        onSave={handleSettingsSave}
+      />
+    </Container>
   );
 };
 

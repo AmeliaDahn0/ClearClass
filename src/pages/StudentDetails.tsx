@@ -45,9 +45,8 @@ const MembeanPageWrapper = ({ student }: { student: MembeanRawData }) => {
   // Get the Membean class URL from the latest daily data (if available)
   let membeanUrl = '';
   try {
-    // Dynamically require the latest daily data file
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const membeanDailyData = require('../scrapers/membeanscraper/data/membean_data_2025-05-28.json');
+    // Use the latest data file
+    const membeanDailyData = require('../scrapers/membeanscraper/data/membean_data_latest.json');
     membeanUrl = membeanDailyData.url || '';
   } catch (e) {
     membeanUrl = '';

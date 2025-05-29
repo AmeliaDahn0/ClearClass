@@ -8895,7 +8895,7 @@
           }
         ]
       },
-      "estimated_completion": "August, 2047"
+      "estimated_completion": "October, 2050"
     }
   },
   {
@@ -10950,7 +10950,7 @@
           }
         ]
       },
-      "estimated_completion": "March, 2026"
+      "estimated_completion": "April, 2026"
     }
   },
   {
@@ -14720,7 +14720,7 @@
           }
         ]
       },
-      "estimated_completion": "mid-July"
+      "estimated_completion": "late July"
     }
   },
   {
@@ -19255,7 +19255,7 @@
           }
         ]
       },
-      "estimated_completion": "Wed, May 28"
+      "estimated_completion": "Thu, May 29"
     }
   },
   {
@@ -19267,7 +19267,7 @@
         "name": "SAT Math Fundamentals",
         "percent_complete": "88%"
       },
-      "last_activity": "Last activity @ 12:12 PM",
+      "last_activity": "Last activity @ 10:53 AM",
       "today_progress": {
         "points": "0/70 XP"
       },
@@ -22986,7 +22986,7 @@
           }
         ]
       },
-      "estimated_completion": "early August"
+      "estimated_completion": "mid-August"
     }
   },
   {
@@ -22998,9 +22998,9 @@
         "name": "SAT Math Fundamentals",
         "percent_complete": "100%"
       },
-      "last_activity": "Last activity @ 12:41 PM",
+      "last_activity": "Last activity on Wed, May 28th",
       "today_progress": {
-        "points": "73/70 XP"
+        "points": "0/70 XP"
       },
       "weekly_xp": "131 XP"
     },
@@ -27291,7 +27291,7 @@
           }
         ]
       },
-      "estimated_completion": "Wed, May 28"
+      "estimated_completion": "Thu, May 29"
     }
   },
   {
@@ -30944,7 +30944,7 @@
           }
         ]
       },
-      "estimated_completion": "January, 2037"
+      "estimated_completion": "October, 2038"
     }
   },
   {
@@ -30956,15 +30956,47 @@
         "name": "SAT Math Fundamentals",
         "percent_complete": "80%"
       },
-      "last_activity": "Last activity on Tue, May 27th",
+      "last_activity": "Last activity @ 11:13 AM",
       "today_progress": {
-        "points": "0/70 XP"
+        "points": "13/70 XP"
       },
-      "weekly_xp": "27 XP"
+      "weekly_xp": "40 XP"
     },
     "detailed_info": {
       "student_url": "https://www.mathacademy.com/students/17295",
       "daily_activity": {
+        "Thu, May 29th \n\n                                         \n        \n                            13": {
+          "date": "Thu, May 29th \n\n                                         \n        \n                            13",
+          "daily_xp": "13 XP",
+          "tasks": [
+            {
+              "id": "4612004",
+              "type": "Lesson",
+              "name": "The Vertex Form of a Parabola",
+              "completion_time": "10:56 AM",
+              "points": {
+                "earned": 7,
+                "possible": 7,
+                "raw_text": "7/7  XP"
+              },
+              "progress": "1",
+              "initial_placement": null
+            },
+            {
+              "id": "4611956",
+              "type": "Lesson",
+              "name": "The Axis of Symmetry of a Parabola",
+              "completion_time": "10:46 AM",
+              "points": {
+                "earned": 6,
+                "possible": 8,
+                "raw_text": "6/8  XP"
+              },
+              "progress": "1",
+              "initial_placement": null
+            }
+          ]
+        },
         "Tue, May 27th \n\n                                         \n        \n                            10": {
           "date": "Tue, May 27th \n\n                                         \n        \n                            10",
           "daily_xp": "10 XP",
@@ -33344,7 +33376,7 @@
                 "color": "rgb(29, 134, 226)"
               },
               {
-                "width": 5.0,
+                "width": 7.0,
                 "color": "rgb(74, 158, 232)"
               },
               {
@@ -33356,11 +33388,11 @@
                 "color": "rgb(165, 207, 243)"
               },
               {
-                "width": 4.0,
+                "width": 5.0,
                 "color": "rgb(210, 231, 249)"
               },
               {
-                "width": 77.0,
+                "width": 74.0,
                 "color": "white"
               }
             ],
@@ -33638,7 +33670,7 @@
                   {
                     "number": "13.4.6.",
                     "name": "The Axis of Symmetry of a Parabola",
-                    "status_color": "white",
+                    "status_color": "rgb(210, 231, 249)",
                     "url": "/topics/704"
                   },
                   {
@@ -33650,7 +33682,7 @@
                   {
                     "number": "13.4.8.",
                     "name": "The Vertex Form of a Parabola",
-                    "status_color": "white",
+                    "status_color": "rgb(74, 158, 232)",
                     "url": "/topics/814"
                   },
                   {
@@ -34713,7 +34745,7 @@
           }
         ]
       },
-      "estimated_completion": "late November"
+      "estimated_completion": "mid-November"
     }
   },
   {
@@ -34723,17 +34755,75 @@
     "dashboard_info": {
       "course_info": {
         "name": "SAT Math Fundamentals",
-        "percent_complete": "94%"
+        "percent_complete": "95%"
       },
-      "last_activity": "Last activity on Tue, May 27th",
+      "last_activity": "Last activity on Wed, May 28th",
       "today_progress": {
         "points": "0/70 XP"
       },
-      "weekly_xp": "112 XP"
+      "weekly_xp": "160 XP"
     },
     "detailed_info": {
       "student_url": "https://www.mathacademy.com/students/17328",
       "daily_activity": {
+        "Wed, May 28th \n\n                                         \n        \n                            48": {
+          "date": "Wed, May 28th \n\n                                         \n        \n                            48",
+          "daily_xp": "48 XP",
+          "tasks": [
+            {
+              "id": "4647759",
+              "type": "Lesson",
+              "name": "Finding Intersections of Lines and Quadratic Functions",
+              "completion_time": "6:37 PM",
+              "points": {
+                "earned": 14,
+                "possible": 16,
+                "raw_text": "14/16  XP"
+              },
+              "progress": "1",
+              "initial_placement": null
+            },
+            {
+              "id": "4647619",
+              "type": "Lesson",
+              "name": "Solving Radical Equations",
+              "completion_time": "4:45 PM",
+              "points": {
+                "earned": 9,
+                "possible": 7,
+                "raw_text": "9/7  XP"
+              },
+              "progress": "1",
+              "initial_placement": null
+            },
+            {
+              "id": "4634449",
+              "type": "Lesson",
+              "name": "Solving Equations With Even Exponents Using the Nth Root Method",
+              "completion_time": "3:40 PM",
+              "points": {
+                "earned": 9,
+                "possible": 7,
+                "raw_text": "9/7  XP"
+              },
+              "progress": "1",
+              "initial_placement": null
+            },
+            {
+              "id": "4634234",
+              "type": "Lesson",
+              "name": "Solving Quadratic Equations with Leading Coefficients by Factoring",
+              "completion_time": "3:27 PM",
+              "points": {
+                "earned": 16,
+                "possible": 13,
+                "raw_text": "16/13  XP"
+              },
+              "progress": "1",
+              "initial_placement": null
+            }
+          ]
+        },
         "Tue, May 27th \n\n                                         \n        \n                            59": {
           "date": "Tue, May 27th \n\n                                         \n        \n                            59",
           "daily_xp": "59 XP",
@@ -35882,15 +35972,15 @@
                 "color": "rgb(23, 107, 181)"
               },
               {
-                "width": 3.0,
+                "width": 6.0,
                 "color": "rgb(29, 134, 226)"
               },
               {
-                "width": 0.0,
+                "width": 9.0,
                 "color": "rgb(74, 158, 232)"
               },
               {
-                "width": 27.0,
+                "width": 15.0,
                 "color": "rgb(120, 182, 237)"
               },
               {
@@ -36055,19 +36145,19 @@
                   {
                     "number": "3.3.2.",
                     "name": "Solving Systems of Equations by Substitution",
-                    "status_color": "rgb(120, 182, 237)",
+                    "status_color": "rgb(74, 158, 232)",
                     "url": "/topics/487"
                   },
                   {
                     "number": "3.3.3.",
                     "name": "Introduction to the Elimination Method",
-                    "status_color": "rgb(120, 182, 237)",
+                    "status_color": "rgb(74, 158, 232)",
                     "url": "/topics/742"
                   },
                   {
                     "number": "3.3.4.",
                     "name": "Solving Systems of Linear Equations Using Elimination: One Transformation",
-                    "status_color": "rgb(120, 182, 237)",
+                    "status_color": "rgb(74, 158, 232)",
                     "url": "/topics/4026"
                   },
                   {
@@ -36097,7 +36187,7 @@
                   {
                     "number": "3.3.9.",
                     "name": "Calculating the Intersection of Two Lines",
-                    "status_color": "rgb(120, 182, 237)",
+                    "status_color": "rgb(29, 134, 226)",
                     "url": "/topics/408"
                   },
                   {
@@ -37520,31 +37610,31 @@
             "total_topics": "57 topics",
             "progress_segments": [
               {
-                "width": 35.0,
+                "width": 39.0,
                 "color": "rgb(23, 107, 181)"
               },
               {
-                "width": 5.0,
+                "width": 7.0,
                 "color": "rgb(29, 134, 226)"
               },
               {
-                "width": 11.0,
+                "width": 14.0,
                 "color": "rgb(74, 158, 232)"
               },
               {
-                "width": 11.0,
+                "width": 7.0,
                 "color": "rgb(120, 182, 237)"
               },
               {
-                "width": 7.0,
+                "width": 9.0,
                 "color": "rgb(165, 207, 243)"
               },
               {
-                "width": 4.0,
+                "width": 2.0,
                 "color": "rgb(210, 231, 249)"
               },
               {
-                "width": 28.0,
+                "width": 23.0,
                 "color": "white"
               }
             ],
@@ -37650,7 +37740,7 @@
                   {
                     "number": "13.2.6.",
                     "name": "Factoring Trinomials",
-                    "status_color": "rgb(29, 134, 226)",
+                    "status_color": "rgb(23, 107, 181)",
                     "url": "/topics/89"
                   },
                   {
@@ -37662,7 +37752,7 @@
                   {
                     "number": "13.2.8.",
                     "name": "Factoring Trinomials With Leading Coefficients",
-                    "status_color": "rgb(210, 231, 249)",
+                    "status_color": "rgb(74, 158, 232)",
                     "url": "/topics/372"
                   },
                   {
@@ -37697,7 +37787,7 @@
                   {
                     "number": "13.3.4.",
                     "name": "Solving Equations With Even Exponents Using the Nth Root Method",
-                    "status_color": "white",
+                    "status_color": "rgb(74, 158, 232)",
                     "url": "/topics/1587"
                   },
                   {
@@ -37733,13 +37823,13 @@
                   {
                     "number": "13.3.10.",
                     "name": "Solving Quadratic Equations by Factoring",
-                    "status_color": "rgb(120, 182, 237)",
+                    "status_color": "rgb(23, 107, 181)",
                     "url": "/topics/375"
                   },
                   {
                     "number": "13.3.11.",
                     "name": "Solving Quadratic Equations with Leading Coefficients by Factoring",
-                    "status_color": "white",
+                    "status_color": "rgb(29, 134, 226)",
                     "url": "/topics/1422"
                   },
                   {
@@ -37781,7 +37871,7 @@
                   {
                     "number": "13.3.18.",
                     "name": "The Discriminant of a Quadratic Equation",
-                    "status_color": "rgb(120, 182, 237)",
+                    "status_color": "rgb(29, 134, 226)",
                     "url": "/topics/425"
                   }
                 ]
@@ -37846,7 +37936,7 @@
                   {
                     "number": "13.4.10.",
                     "name": "Finding Intersections of Lines and Quadratic Functions",
-                    "status_color": "white",
+                    "status_color": "rgb(165, 207, 243)",
                     "url": "/topics/410"
                   }
                 ]
@@ -38143,7 +38233,7 @@
                 "color": "rgb(74, 158, 232)"
               },
               {
-                "width": 0.0,
+                "width": 5.0,
                 "color": "rgb(120, 182, 237)"
               },
               {
@@ -38155,7 +38245,7 @@
                 "color": "rgb(210, 231, 249)"
               },
               {
-                "width": 18.0,
+                "width": 14.0,
                 "color": "white"
               }
             ],
@@ -38302,7 +38392,7 @@
                   {
                     "number": "15.3.9.",
                     "name": "Solving Radical Equations",
-                    "status_color": "white",
+                    "status_color": "rgb(120, 182, 237)",
                     "url": "/topics/116"
                   }
                 ]
@@ -38897,7 +38987,7 @@
           }
         ]
       },
-      "estimated_completion": "Sun, June 8"
+      "estimated_completion": "Mon, June 9"
     }
   },
   {
@@ -42602,7 +42692,7 @@
           }
         ]
       },
-      "estimated_completion": "October, 2027"
+      "estimated_completion": "March, 2028"
     }
   },
   {
@@ -46559,7 +46649,7 @@
           }
         ]
       },
-      "estimated_completion": "November, 2026"
+      "estimated_completion": "February, 2027"
     }
   }
 ]
