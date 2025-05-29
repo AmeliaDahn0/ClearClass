@@ -5,7 +5,7 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3001;
 
-// Enable CORS for development
+// Enable CORS
 app.use(cors());
 
 // Add request logging
@@ -37,8 +37,8 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
-// For local development
-if (process.env.NODE_ENV !== 'production') {
+// Only start the server if we're not in a serverless environment
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
   app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
   });
