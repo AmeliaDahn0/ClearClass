@@ -1,6 +1,6 @@
 {
-  "timestamp": "2025-05-28T14:26:27.842601",
-  "url": "https://membean.com/tclasses/345817?start_date=2025-05-28T05%3A00%3A00.000Z&end_date=2025-05-29T04%3A59%3A59.999Z#reports",
+  "timestamp": "2025-06-03T22:04:27.942124",
+  "url": "https://membean.com/tclasses/345817?start_date=2025-06-03T05%3A00%3A00.000Z&end_date=2025-06-04T04%3A59%3A59.999Z#reports",
   "students": {
     "3975157": {
       "name": "Attia, Olivia",
@@ -27,21 +27,21 @@
     "4023974": {
       "name": "Chandrakumar, Hasini",
       "current_data": {
-        "level": "1 - High School",
-        "level_sort": 31,
-        "words_seen": 192,
-        "last_trained": "May 27, 2025"
+        "level": "2 - High School",
+        "level_sort": 32,
+        "words_seen": 334,
+        "last_trained": "Jun 03, 2025"
       },
       "tabs_data": {
         "Reports": {
-          "goal_met": false,
+          "goal_met": true,
           "goal_progress": "0%",
-          "fifteen_min_days": 0,
-          "minutes_trained": 0,
-          "accuracy": "0%",
+          "fifteen_min_days": 1,
+          "minutes_trained": 15,
+          "accuracy": "95%",
           "dubious_minutes": 0,
-          "skipped_words": 0,
-          "new_words": 0,
+          "skipped_words": 2,
+          "new_words": 19,
           "assessment_score": ""
         }
       }
@@ -51,8 +51,8 @@
       "current_data": {
         "level": "1 - High School",
         "level_sort": 31,
-        "words_seen": 77,
-        "last_trained": "May 27, 2025"
+        "words_seen": 103,
+        "last_trained": "May 31, 2025"
       },
       "tabs_data": {
         "Reports": {
@@ -96,18 +96,18 @@
         "level": "2 - High School",
         "level_sort": 32,
         "words_seen": 66,
-        "last_trained": "May 27, 2025"
+        "last_trained": "Jun 02, 2025"
       },
       "tabs_data": {
         "Reports": {
           "goal_met": false,
-          "goal_progress": "0%",
+          "goal_progress": "77%",
           "fifteen_min_days": 0,
-          "minutes_trained": 0,
-          "accuracy": "0%",
+          "minutes_trained": 10,
+          "accuracy": "100%",
           "dubious_minutes": 0,
           "skipped_words": 0,
-          "new_words": 0,
+          "new_words": 10,
           "assessment_score": ""
         }
       }
@@ -161,19 +161,19 @@
       "current_data": {
         "level": "1 - High School",
         "level_sort": 31,
-        "words_seen": 29,
-        "last_trained": "May 23, 2025"
+        "words_seen": 37,
+        "last_trained": "Jun 02, 2025"
       },
       "tabs_data": {
         "Reports": {
-          "goal_met": false,
+          "goal_met": true,
           "goal_progress": "0%",
-          "fifteen_min_days": 0,
-          "minutes_trained": 0,
-          "accuracy": "0%",
+          "fifteen_min_days": 1,
+          "minutes_trained": 16,
+          "accuracy": "60%",
           "dubious_minutes": 0,
           "skipped_words": 0,
-          "new_words": 0,
+          "new_words": 4,
           "assessment_score": ""
         }
       }
@@ -183,19 +183,19 @@
       "current_data": {
         "level": "1 - High School",
         "level_sort": 31,
-        "words_seen": 33,
-        "last_trained": "May 23, 2025"
+        "words_seen": 37,
+        "last_trained": "Jun 02, 2025"
       },
       "tabs_data": {
         "Reports": {
           "goal_met": false,
-          "goal_progress": "0%",
+          "goal_progress": "77%",
           "fifteen_min_days": 0,
-          "minutes_trained": 0,
-          "accuracy": "0%",
+          "minutes_trained": 10,
+          "accuracy": "77%",
           "dubious_minutes": 0,
           "skipped_words": 0,
-          "new_words": 0,
+          "new_words": 10,
           "assessment_score": ""
         }
       }
@@ -210,14 +210,14 @@
       },
       "tabs_data": {
         "Reports": {
-          "goal_met": true,
+          "goal_met": false,
           "goal_progress": "0%",
-          "fifteen_min_days": 1,
-          "minutes_trained": 16,
-          "accuracy": "100%",
+          "fifteen_min_days": 0,
+          "minutes_trained": 0,
+          "accuracy": "0%",
           "dubious_minutes": 0,
           "skipped_words": 0,
-          "new_words": 10,
+          "new_words": 0,
           "assessment_score": ""
         }
       }
@@ -271,8 +271,8 @@
       "current_data": {
         "level": "1 - High School",
         "level_sort": 31,
-        "words_seen": 59,
-        "last_trained": "May 25, 2025"
+        "words_seen": 74,
+        "last_trained": "Jun 01, 2025"
       },
       "tabs_data": {
         "Reports": {

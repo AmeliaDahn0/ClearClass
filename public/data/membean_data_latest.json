@@ -1,6 +1,6 @@
 {
-  "timestamp": "2025-05-27T19:28:35.171569",
-  "url": "https://membean.com/tclasses/345817?start_date=2025-05-27T05%3A00%3A00.000Z&end_date=2025-05-28T04%3A59%3A59.999Z#reports",
+  "timestamp": "2025-06-04T10:04:33.169846",
+  "url": "https://membean.com/tclasses/345817?start_date=2025-06-04T05%3A00%3A00.000Z&end_date=2025-06-05T04%3A59%3A59.999Z#reports",
   "students": {
     "3975157": {
       "name": "Attia, Olivia",
@@ -27,10 +27,10 @@
     "4023974": {
       "name": "Chandrakumar, Hasini",
       "current_data": {
-        "level": "1 - High School",
-        "level_sort": 31,
-        "words_seen": 156,
-        "last_trained": "May 26, 2025"
+        "level": "2 - High School",
+        "level_sort": 32,
+        "words_seen": 334,
+        "last_trained": "Jun 03, 2025"
       },
       "tabs_data": {
         "Reports": {
@@ -51,19 +51,19 @@
       "current_data": {
         "level": "1 - High School",
         "level_sort": 31,
-        "words_seen": 77,
-        "last_trained": "May 27, 2025"
+        "words_seen": 109,
+        "last_trained": "Jun 03, 2025"
       },
       "tabs_data": {
         "Reports": {
-          "goal_met": true,
+          "goal_met": false,
           "goal_progress": "0%",
-          "fifteen_min_days": 1,
-          "minutes_trained": 15,
-          "accuracy": "94%",
+          "fifteen_min_days": 0,
+          "minutes_trained": 0,
+          "accuracy": "0%",
           "dubious_minutes": 0,
           "skipped_words": 0,
-          "new_words": 13,
+          "new_words": 0,
           "assessment_score": ""
         }
       }
@@ -95,19 +95,19 @@
       "current_data": {
         "level": "2 - High School",
         "level_sort": 32,
-        "words_seen": 66,
-        "last_trained": "May 27, 2025"
+        "words_seen": 76,
+        "last_trained": "Jun 03, 2025"
       },
       "tabs_data": {
         "Reports": {
-          "goal_met": true,
+          "goal_met": false,
           "goal_progress": "0%",
-          "fifteen_min_days": 1,
-          "minutes_trained": 30,
-          "accuracy": "75%",
+          "fifteen_min_days": 0,
+          "minutes_trained": 0,
+          "accuracy": "0%",
           "dubious_minutes": 0,
           "skipped_words": 0,
-          "new_words": 2,
+          "new_words": 0,
           "assessment_score": ""
         }
       }
@@ -161,8 +161,8 @@
       "current_data": {
         "level": "1 - High School",
         "level_sort": 31,
-        "words_seen": 29,
-        "last_trained": "May 23, 2025"
+        "words_seen": 41,
+        "last_trained": "Jun 03, 2025"
       },
       "tabs_data": {
         "Reports": {
@@ -183,8 +183,8 @@
       "current_data": {
         "level": "1 - High School",
         "level_sort": 31,
-        "words_seen": 33,
-        "last_trained": "May 23, 2025"
+        "words_seen": 47,
+        "last_trained": "Jun 03, 2025"
       },
       "tabs_data": {
         "Reports": {
@@ -205,8 +205,30 @@
       "current_data": {
         "level": "1 - High School",
         "level_sort": 31,
-        "words_seen": 48,
-        "last_trained": "May 26, 2025"
+        "words_seen": 62,
+        "last_trained": "May 28, 2025"
+      },
+      "tabs_data": {
+        "Reports": {
+          "goal_met": false,
+          "goal_progress": "0%",
+          "fifteen_min_days": 0,
+          "minutes_trained": 0,
+          "accuracy": "0%",
+          "dubious_minutes": 0,
+          "skipped_words": 0,
+          "new_words": 0,
+          "assessment_score": ""
+        }
+      }
+    },
+    "4039843": {
+      "name": "Peesu, Ananya",
+      "current_data": {
+        "level": "Not Calibrated",
+        "level_sort": 0,
+        "words_seen": 0,
+        "last_trained": ""
       },
       "tabs_data": {
         "Reports": {
@@ -249,8 +271,8 @@
       "current_data": {
         "level": "1 - High School",
         "level_sort": 31,
-        "words_seen": 59,
-        "last_trained": "May 25, 2025"
+        "words_seen": 74,
+        "last_trained": "Jun 01, 2025"
       },
       "tabs_data": {
         "Reports": {

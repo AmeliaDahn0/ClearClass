@@ -31,7 +31,6 @@ import {
 import ScraperDataService from '../services/ScraperDataService';
 import MembeanStudentPage from '../components/MembeanStudentPage';
 import { MembeanRawData, MembeanDisplayData } from '../types/types';
-import membeanWeeklyData from '../scrapers/membeanscraper/data/membean_weekly_May_25,_2025_to_May_31,_2025.json';
 
 type StudentData = BaseStudentData;
 
@@ -40,51 +39,81 @@ interface StudentDetailsProps {
 }
 
 const MembeanPageWrapper = ({ student }: { student: MembeanRawData }) => {
-  // Find the weekly data for this student by matching name
-  const weeklyData = Object.values(membeanWeeklyData.students).find((s: any) => s.name === student.name);
-  // Get the Membean class URL from the latest daily data (if available)
-  let membeanUrl = '';
-  try {
-    // Dynamically require the latest daily data file
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const membeanDailyData = require('../scrapers/membeanscraper/data/membean_data_2025-05-28.json');
-    membeanUrl = membeanDailyData.url || '';
-  } catch (e) {
-    membeanUrl = '';
-  }
+  const [membeanData, setMembeanData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    ScraperDataService.getInstance().getMembeanDataForToday()
+      .then(data => {
+        console.log('[Membean Debug] Loaded membean_data_latest.json:', data);
+        setMembeanData(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError('Failed to load Membean data');
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <div>Loading Membean data...</div>;
+  if (error || !membeanData) return <div>{error || 'No Membean data found.'}</div>;
+
+  // Find the student in the latest Membean data by normalized name
+  const normalizeStudentName = (name: string): string => {
+    if (name.includes(',')) {
+      const [lastName, firstName] = name.split(',').map(part => part.trim());
+      return `${firstName} ${lastName}`;
+    }
+    return name.trim();
+  };
+  const normalizedTargetName = normalizeStudentName(student.name).toLowerCase();
+  const membeanStudent = Object.values(membeanData.students).find((s: any) => normalizeStudentName(s.name).toLowerCase() === normalizedTargetName) as MembeanRawData | undefined;
+  console.log('[Membean Debug] Looking for student:', normalizedTargetName, 'Matched student:', membeanStudent);
+  if (!membeanStudent) return <div>Student not found in Membean data.</div>;
+
+  // Show the date of the Membean data being displayed
+  const dataDate = membeanData.timestamp ? new Date(membeanData.timestamp).toLocaleString() : '';
+
+  // Optionally, find weekly data if available (if your data structure supports it)
+  // const weeklyData = ...
+
   // Transform the raw Membean data into the format expected by MembeanStudentPage
   const transformedStudent: MembeanDisplayData = {
-    level_number: student.current_data.level,
-    problems_answered_today: student.tabs_data.Reports.minutes_trained.toString(),
+    level_number: membeanStudent.current_data.level,
+    problems_answered_today: membeanStudent.tabs_data.Reports.minutes_trained.toString(),
     problems_answered_yesterday: "0", // This data isn't available in Membean
-    current_level_progress: student.tabs_data.Reports.goal_progress,
-    grade: student.tabs_data.Reports.accuracy,
+    current_level_progress: membeanStudent.tabs_data.Reports.goal_progress,
+    grade: membeanStudent.tabs_data.Reports.accuracy,
     sessions: {
-      total_completed: student.tabs_data.Reports.fifteen_min_days.toString(),
-      total_started: student.tabs_data.Reports.fifteen_min_days.toString(),
+      total_completed: membeanStudent.tabs_data.Reports.fifteen_min_days.toString(),
+      total_started: membeanStudent.tabs_data.Reports.fifteen_min_days.toString(),
       days: {
         completed: [],
         started: []
       }
     },
-    words_seen: student.current_data.words_seen,
-    last_trained: student.current_data.last_trained,
-    dubious_minutes: student.tabs_data.Reports.dubious_minutes,
-    skipped_words: student.tabs_data.Reports.skipped_words,
-    new_words: student.tabs_data.Reports.new_words,
-    assessment_score: student.tabs_data.Reports.assessment_score,
-    goal_met: student.tabs_data.Reports.goal_met,
-    weekly_data: weeklyData ? {
-      goal_met: weeklyData.tabs_data.Reports.goal_met,
-      minutes_trained: weeklyData.tabs_data.Reports.minutes_trained,
-      accuracy: weeklyData.tabs_data.Reports.accuracy,
-      new_words: weeklyData.tabs_data.Reports.new_words,
-      days_practiced: weeklyData.tabs_data.Reports.fifteen_min_days
-    } : undefined,
-    membeanUrl // Pass the class URL here
+    words_seen: membeanStudent.current_data.words_seen,
+    last_trained: membeanStudent.current_data.last_trained,
+    dubious_minutes: membeanStudent.tabs_data.Reports.dubious_minutes,
+    skipped_words: membeanStudent.tabs_data.Reports.skipped_words,
+    new_words: membeanStudent.tabs_data.Reports.new_words,
+    assessment_score: membeanStudent.tabs_data.Reports.assessment_score,
+    goal_met: membeanStudent.tabs_data.Reports.goal_met,
+    // weekly_data: weeklyData ? ... : undefined, // Add if you have weekly data
+    membeanUrl: membeanData.url || ''
   };
-  
-  return <MembeanStudentPage student={transformedStudent} improvedReadability />;
+
+  return (
+    <>
+      <Box sx={{ mb: 2 }}>
+        <Typography variant="subtitle2" color="text.secondary">
+          Data as of: {dataDate}
+        </Typography>
+      </Box>
+      <MembeanStudentPage student={transformedStudent} improvedReadability />
+    </>
+  );
 };
 
 const MathAcademyPage = ({ student }: { student: StudentData }) => {

@@ -6,6 +6,7 @@ import csv
 from typing import List, Dict
 import json
 from datetime import datetime
+import shutil
 
 def load_student_list() -> List[str]:
     """Load the list of students to process from students.csv"""
@@ -337,10 +338,14 @@ class DataCollector:
         self.save_to_file()
     
     def save_to_file(self):
-        """Save collected data to today's JSON file"""
+        """Save collected data to today's JSON file and to the latest file"""
         with open(self.filename, 'w') as f:
             json.dump(self.data, f, indent=2)
-        print(f"\nData saved to {self.filename}")
+        # Also save to the latest file
+        latest_filename = 'data/membean_data_latest.json'
+        with open(latest_filename, 'w') as f:
+            json.dump(self.data, f, indent=2)
+        print(f"\nData saved to {self.filename} and {latest_filename}")
 
 # Global data collector
 data_collector = None
@@ -512,6 +517,12 @@ async def main():
             # Save all collected data to a single file
             data_collector.save_to_file()
             print("Done! Browser will close automatically.")
+            
+            # Copy the latest Membean data to the dashboard's public directory
+            src = os.path.join(os.path.dirname(__file__), "data", "membean_data_latest.json")
+            dst = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../public/data/membean_data_latest.json"))
+            shutil.copyfile(src, dst)
+            print(f"Copied {src} to {dst}")
             
         except Exception as e:
             print(f"An error occurred: {e}")
