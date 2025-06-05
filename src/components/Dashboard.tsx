@@ -181,11 +181,12 @@ const Dashboard: React.FC<DashboardProps> = ({ students, loading, error }) => {
         case 'xp': {
           const target = metricSettings.mathAcademy.target;
           const dailyXP = todayActivity?.dailyXP || `0/${target} XP`;
-          const [earnedStr, targetStr] = dailyXP.split(/[ /]/);
-          const earned = parseInt(earnedStr);
-          const parsedTarget = parseInt(targetStr);
-          if (earned === 0 && parsedTarget === 0) return 100;
-          if (parsedTarget === 0) return 0;
+          // Robustly extract earned and target
+          const match = dailyXP.match(/(\d+)\s*\/\s*(\d+)/);
+          const earned = match ? parseInt(match[1], 10) : 0;
+          const parsedTarget = match ? parseInt(match[2], 10) : 0;
+          if (parsedTarget === 0) return earned === 0 ? 100 : 0;
+          if (isNaN(earned) || isNaN(parsedTarget)) return 0;
           // Return the uncapped percentage for display
           return (earned / parsedTarget) * 100;
         }
@@ -318,15 +319,16 @@ const Dashboard: React.FC<DashboardProps> = ({ students, loading, error }) => {
     const progressNum = typeof progress === 'string' ? parseFloat(progress) : progress;
     const isMathAcademy = platform === 'math-academy';
     const isMembean = platform === 'membean';
-    // Use the override for the displayed percent if provided
-    const displayPercent = typeof displayPercentOverride === 'number' && !isNaN(displayPercentOverride)
-      ? `${Math.round(displayPercentOverride)}%`
-      : (isNaN(progressNum) ? '0%' : `${Math.round(progressNum)}%`);
-    // Cap the progress bar at 100
+    // Use the override for the displayed percent if provided (uncapped for color logic)
+    const uncappedPercent = typeof displayPercentOverride === 'number' && !isNaN(displayPercentOverride)
+      ? displayPercentOverride
+      : progressNum;
+    const displayPercent = `${Math.round(uncappedPercent)}%`;
+    // Cap the progress bar at 100 for display only
     const progressBarValue = isNaN(progressNum) ? 0 : Math.min(progressNum, 100);
-    // Color logic: green if progress is 100 or more for Math Academy and Membean
+    // Color logic: green if progress is 100 or more for Math Academy and Membean (using uncapped percent)
     const progressColor = (isMathAcademy || isMembean)
-      ? (displayPercentOverride !== undefined ? displayPercentOverride >= 100 : progressNum >= 100) ? '#4CAF50' : '#f44336'
+      ? uncappedPercent >= 100 ? '#4CAF50' : '#f44336'
       : (progressNum >= 80 ? '#4CAF50' : progressNum >= 60 ? '#FFA726' : '#f44336');
 
     return (

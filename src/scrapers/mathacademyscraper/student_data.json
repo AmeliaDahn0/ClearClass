@@ -40163,15 +40163,60 @@
         "name": "SAT Math Fundamentals",
         "percent_complete": "24%"
       },
-      "last_activity": "Last activity on Wed, Jun 4th",
+      "last_activity": "Last activity @ 5:17 PM",
       "today_progress": {
-        "points": "0/30 XP"
+        "points": "13/30 XP"
       },
-      "weekly_xp": "58 XP"
+      "weekly_xp": "71 XP"
     },
     "detailed_info": {
       "student_url": "https://www.mathacademy.com/students/17642",
       "daily_activity": {
+        "Thu, Jun 5th \n\n                                         \n        \n                            13": {
+          "date": "Thu, Jun 5th \n\n                                         \n        \n                            13",
+          "daily_xp": "13 XP",
+          "tasks": [
+            {
+              "id": "4732883",
+              "type": "Lesson",
+              "name": "Solving One-Step Linear Inequalities",
+              "completion_time": "5:17 PM",
+              "points": {
+                "earned": 7,
+                "possible": 8,
+                "raw_text": "7/8  XP"
+              },
+              "progress": "1",
+              "initial_placement": null
+            },
+            {
+              "id": "4718675",
+              "type": "Lesson",
+              "name": "Solving Linear Equations Using Cross-Multiplication",
+              "completion_time": "5:09 PM",
+              "points": {
+                "earned": 0,
+                "possible": 12,
+                "raw_text": "0/12  XP"
+              },
+              "progress": "1",
+              "initial_placement": null
+            },
+            {
+              "id": "4718743",
+              "type": "Lesson",
+              "name": "The Quotient Rule for Exponents With Algebraic Expressions",
+              "completion_time": "5:08 PM",
+              "points": {
+                "earned": 6,
+                "possible": 7,
+                "raw_text": "6/7  XP"
+              },
+              "progress": "1",
+              "initial_placement": null
+            }
+          ]
+        },
         "Wed, Jun 4th \n\n                                         \n        \n                            15": {
           "date": "Wed, Jun 4th \n\n                                         \n        \n                            15",
           "daily_xp": "15 XP",
@@ -41301,11 +41346,11 @@
                 "color": "rgb(29, 134, 226)"
               },
               {
-                "width": 0.0,
+                "width": 5.0,
                 "color": "rgb(74, 158, 232)"
               },
               {
-                "width": 5.0,
+                "width": 0.0,
                 "color": "rgb(120, 182, 237)"
               },
               {
@@ -41313,11 +41358,11 @@
                 "color": "rgb(165, 207, 243)"
               },
               {
-                "width": 0.0,
+                "width": 5.0,
                 "color": "rgb(210, 231, 249)"
               },
               {
-                "width": 85.0,
+                "width": 80.0,
                 "color": "white"
               }
             ],
@@ -41340,13 +41385,13 @@
                   {
                     "number": "4.1.3.",
                     "name": "Verifying Solutions of Linear Inequalities",
-                    "status_color": "rgb(120, 182, 237)",
+                    "status_color": "rgb(74, 158, 232)",
                     "url": "/topics/387"
                   },
                   {
                     "number": "4.1.4.",
                     "name": "Solving One-Step Linear Inequalities",
-                    "status_color": "white",
+                    "status_color": "rgb(210, 231, 249)",
                     "url": "/topics/38"
                   },
                   {
@@ -43102,7 +43147,7 @@
                 "color": "rgb(29, 134, 226)"
               },
               {
-                "width": 0.0,
+                "width": 4.0,
                 "color": "rgb(74, 158, 232)"
               },
               {
@@ -43118,7 +43163,7 @@
                 "color": "rgb(210, 231, 249)"
               },
               {
-                "width": 88.0,
+                "width": 84.0,
                 "color": "white"
               }
             ],
@@ -43141,7 +43186,7 @@
                   {
                     "number": "14.1.3.",
                     "name": "The Quotient Rule for Exponents With Algebraic Expressions",
-                    "status_color": "white",
+                    "status_color": "rgb(74, 158, 232)",
                     "url": "/topics/374"
                   },
                   {
@@ -44062,7 +44107,7 @@
           }
         ]
       },
-      "estimated_completion": "February, 2027"
+      "estimated_completion": "November, 2026"
     }
   },
   {

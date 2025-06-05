@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-06-05T14:00:01.122196",
+  "timestamp": "2025-06-05T18:00:00.683950",
   "students": {
     "3975157": {
       "name": "Attia, Olivia",
@@ -160,8 +160,8 @@
       "current_data": {
         "level": "1 - High School",
         "level_sort": 31,
-        "words_seen": 48,
-        "last_trained": "Jun 04, 2025"
+        "words_seen": 54,
+        "last_trained": "Jun 05, 2025"
       },
       "tabs_data": {
         "Reports": {
