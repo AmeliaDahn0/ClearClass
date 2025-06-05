@@ -1,6 +1,6 @@
 {
-  "timestamp": "2025-06-04T10:04:33.169846",
-  "url": "https://membean.com/tclasses/345817?start_date=2025-06-04T05%3A00%3A00.000Z&end_date=2025-06-05T04%3A59%3A59.999Z#reports",
+  "timestamp": "2025-06-05T14:04:36.459768",
+  "url": "https://membean.com/tclasses/345817?start_date=2025-06-05T05%3A00%3A00.000Z&end_date=2025-06-06T04%3A59%3A59.999Z#reports",
   "students": {
     "3975157": {
       "name": "Attia, Olivia",
@@ -161,8 +161,8 @@
       "current_data": {
         "level": "1 - High School",
         "level_sort": 31,
-        "words_seen": 41,
-        "last_trained": "Jun 03, 2025"
+        "words_seen": 48,
+        "last_trained": "Jun 04, 2025"
       },
       "tabs_data": {
         "Reports": {
@@ -189,13 +189,13 @@
       "tabs_data": {
         "Reports": {
           "goal_met": false,
-          "goal_progress": "0%",
+          "goal_progress": "40%",
           "fifteen_min_days": 0,
-          "minutes_trained": 0,
-          "accuracy": "0%",
+          "minutes_trained": 6,
+          "accuracy": "96%",
           "dubious_minutes": 0,
           "skipped_words": 0,
-          "new_words": 0,
+          "new_words": 4,
           "assessment_score": ""
         }
       }

@@ -66,6 +66,12 @@ class ScraperDataService {
     return response.json();
   }
 
+  private async fetchLatestAlphaReadData(): Promise<any> {
+    const response = await fetch('/data/alpharead_student_data_latest.json');
+    if (!response.ok) throw new Error('Failed to fetch latest AlphaRead data');
+    return response.json();
+  }
+
   public async getMembeanDataForToday() {
     return this.fetchLatestMembeanData();
   }
@@ -95,6 +101,7 @@ class ScraperDataService {
   private async fetchLatestData(): Promise<StudentData[]> {
     try {
       const membeanData = await this.fetchLatestMembeanData();
+      const alphaReadData = await this.fetchLatestAlphaReadData();
       // Fetch all available daily Membean JSONs for the week
       const dailyFiles = [
         '/data/membean_data_2025-05-22.json',
@@ -113,7 +120,7 @@ class ScraperDataService {
         })
       );
       const filteredDailyDataArray = membeanDailyDataArray.filter(Boolean);
-      const transformedData = transformData(mathAcademyData, membeanData, membeanData, filteredDailyDataArray);
+      const transformedData = transformData(mathAcademyData, membeanData, membeanData, filteredDailyDataArray, alphaReadData);
       return transformedData;
     } catch (error) {
       console.error('Error processing data:', error);

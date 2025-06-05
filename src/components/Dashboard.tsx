@@ -70,7 +70,16 @@ interface SubjectCardProps {
   dailyXP?: string;
   dailyGoal?: string;
   goalColor?: string;
+  displayPercentOverride?: number;
 }
+
+// Add metric label mapping for AlphaRead
+const ALPHAREAD_METRIC_LABELS: Record<string, string> = {
+  avgScore: 'Avg Score',
+  sessions: 'Sessions',
+  timeReading: 'Time Reading',
+  practicedToday: 'Practiced Today',
+};
 
 const Dashboard: React.FC<DashboardProps> = ({ students, loading, error }) => {
   const navigate = useNavigate();
@@ -86,8 +95,13 @@ const Dashboard: React.FC<DashboardProps> = ({ students, loading, error }) => {
     membean: {
       metric: 'minutes',
       target: 15
+    },
+    alpharead: {
+      metric: 'avgScore',
+      target: 80
     }
   });
+  const [lastScrape, setLastScrape] = useState<string | null>(null);
 
   useEffect(() => {
     console.log('Dashboard mounted/updated with students:', students);
@@ -112,6 +126,22 @@ const Dashboard: React.FC<DashboardProps> = ({ students, loading, error }) => {
       sessionStorage.removeItem('scrollToStudentId');
     }
   }, [students]);
+
+  useEffect(() => {
+    // Fetch the last scrape timestamp from the Membean data file
+    fetch('/data/membean_data_latest.json')
+      .then(res => res.json())
+      .then(data => {
+        if (data.timestamp) {
+          const date = new Date(data.timestamp);
+          setLastScrape(date.toLocaleString(undefined, {
+            year: 'numeric', month: 'long', day: 'numeric',
+            hour: '2-digit', minute: '2-digit', second: '2-digit',
+          }));
+        }
+      })
+      .catch(() => setLastScrape(null));
+  }, []);
 
   // Sort students by last name
   const sortedStudents = sortStudentsByLastName(students);
@@ -148,16 +178,29 @@ const Dashboard: React.FC<DashboardProps> = ({ students, loading, error }) => {
       const todayActivity = todayActivityEntry ? todayActivityEntry[1] as DailyActivity : null;
       
       switch (metricSettings.mathAcademy.metric) {
-        case 'xp':
-          const dailyXP = todayActivity?.dailyXP || '0/70 XP';
-          const [earned] = (dailyXP || '0/70 XP').split(/[ /]/);
-          return Math.min(Math.round((parseInt(earned) / metricSettings.mathAcademy.target) * 100), 100);
-        case 'assessments':
+        case 'xp': {
+          const target = metricSettings.mathAcademy.target;
+          const dailyXP = todayActivity?.dailyXP || `0/${target} XP`;
+          const [earnedStr, targetStr] = dailyXP.split(/[ /]/);
+          const earned = parseInt(earnedStr);
+          const parsedTarget = parseInt(targetStr);
+          if (earned === 0 && parsedTarget === 0) return 100;
+          if (parsedTarget === 0) return 0;
+          // Return the uncapped percentage for display
+          return (earned / parsedTarget) * 100;
+        }
+        case 'assessments': {
           const assessments = todayActivity?.tasks?.filter((task: Task) => task.type === 'Assessment') || [];
-          return Math.min(Math.round((assessments.length / metricSettings.mathAcademy.target) * 100), 100);
-        case 'tasks':
+          if (metricSettings.mathAcademy.target === 0 && assessments.length === 0) return 100;
+          // Return the uncapped percentage for display
+          return (assessments.length / metricSettings.mathAcademy.target) * 100;
+        }
+        case 'tasks': {
           const tasks = todayActivity?.tasks || [];
-          return Math.min(Math.round((tasks.length / metricSettings.mathAcademy.target) * 100), 100);
+          if (metricSettings.mathAcademy.target === 0 && tasks.length === 0) return 100;
+          // Return the uncapped percentage for display
+          return (tasks.length / metricSettings.mathAcademy.target) * 100;
+        }
         default:
           return 0;
       }
@@ -165,13 +208,13 @@ const Dashboard: React.FC<DashboardProps> = ({ students, loading, error }) => {
       switch (metricSettings.membean.metric) {
         case 'minutes':
           const minutesTrained = student.tabs_data?.Reports?.minutes_trained || 0;
-          return Math.min(Math.round((minutesTrained / metricSettings.membean.target) * 100), 100);
+          return (minutesTrained / metricSettings.membean.target) * 100;
         case 'words':
           const wordsSeen = student.current_data?.words_seen || 0;
-          return Math.min(Math.round((wordsSeen / metricSettings.membean.target) * 100), 100);
+          return (wordsSeen / metricSettings.membean.target) * 100;
         case 'accuracy':
           const accuracy = parseInt(student.tabs_data?.Reports?.accuracy || '0');
-          return Math.min(Math.round((accuracy / metricSettings.membean.target) * 100), 100);
+          return (accuracy / metricSettings.membean.target) * 100;
         default:
           return 0;
       }
@@ -187,10 +230,12 @@ const Dashboard: React.FC<DashboardProps> = ({ students, loading, error }) => {
       const todayActivity = todayActivityEntry ? todayActivityEntry[1] as DailyActivity : null;
       
       switch (metricSettings.mathAcademy.metric) {
-        case 'xp':
-          const dailyXP = todayActivity?.dailyXP || '0/70 XP';
-          const [earned] = (dailyXP || '0/70 XP').split(/[ /]/);
-          return `${earned}/${metricSettings.mathAcademy.target} XP`;
+        case 'xp': {
+          const target = metricSettings.mathAcademy.target;
+          const dailyXP = todayActivity?.dailyXP || `0/${target} XP`;
+          const [earned] = dailyXP.split(/[ /]/);
+          return `${earned}/${target} XP`;
+        }
         case 'assessments':
           const assessments = todayActivity?.tasks?.filter((task: Task) => task.type === 'Assessment') || [];
           return `${assessments.length}/${metricSettings.mathAcademy.target} Assessments`;
@@ -205,14 +250,37 @@ const Dashboard: React.FC<DashboardProps> = ({ students, loading, error }) => {
         case 'minutes':
           const minutesTrained = student.tabs_data?.Reports?.minutes_trained || 0;
           return `${minutesTrained}/${metricSettings.membean.target} minutes`;
-        case 'words':
-          const wordsSeen = student.current_data?.words_seen || 0;
-          return `${wordsSeen}/${metricSettings.membean.target} words`;
         case 'accuracy':
-          const accuracy = student.tabs_data?.Reports?.accuracy || '0%';
+          let accuracy = student.tabs_data?.Reports?.accuracy || '0%';
+          accuracy = typeof accuracy === 'string' ? accuracy.replace('%', '') : accuracy;
           return `${accuracy}/${metricSettings.membean.target}%`;
         default:
           return '0/0';
+      }
+    } else if (platform === 'alpharead') {
+      const alpha = student.alpharead;
+      const metric = metricSettings.alpharead.metric;
+      const target = metricSettings.alpharead.target;
+      if (!alpha) return 'No data';
+      switch (metric) {
+        case 'avgScore':
+          return `${alpha.average_score ?? 0}/${target} ${ALPHAREAD_METRIC_LABELS[metric]}`;
+        case 'sessions':
+          return `${alpha.total_sessions ?? 0}/${target} ${ALPHAREAD_METRIC_LABELS[metric]}`;
+        case 'timeReading': {
+          // Convert time_reading (e.g. '8h 38m') to minutes
+          let minutes = 0;
+          if (alpha.time_reading) {
+            const hMatch = alpha.time_reading.match(/(\d+)h/);
+            const mMatch = alpha.time_reading.match(/(\d+)m/);
+            minutes = (hMatch ? parseInt(hMatch[1]) : 0) * 60 + (mMatch ? parseInt(mMatch[1]) : 0);
+          }
+          return `${minutes}/${target} min ${ALPHAREAD_METRIC_LABELS[metric]}`;
+        }
+        case 'practicedToday':
+          return `Practiced Today: ${target === 'yes' ? 'Yes' : 'No'}`;
+        default:
+          return '';
       }
     }
     return '0/0';
@@ -245,44 +313,21 @@ const Dashboard: React.FC<DashboardProps> = ({ students, loading, error }) => {
     );
   }
 
-  const SubjectCard: React.FC<SubjectCardProps> = ({ title, progress, details, studentId, platform, dailyXP, dailyGoal, goalColor }) => {
-    // Determine the appropriate color based on progress
-    const getProgressColor = () => {
-      if (platform === 'math-academy') {
-        const target = metricSettings.mathAcademy.target;
-        return progress >= 100 ? '#4CAF50' : '#f44336';
-      }
-      return progress >= 80 ? '#4CAF50' : progress >= 60 ? '#FFA726' : '#f44336';
-    };
-
-    const progressColor = getProgressColor();
-
-    const getDisplayValue = () => {
-      if (platform === 'math-academy') {
-        switch (metricSettings.mathAcademy.metric) {
-          case 'xp':
-            return dailyXP;
-          case 'assessments':
-            return `${progress}%`;
-          case 'tasks':
-            return `${progress}%`;
-          default:
-            return dailyXP;
-        }
-      } else if (platform === 'membean') {
-        switch (metricSettings.membean.metric) {
-          case 'minutes':
-            return dailyGoal;
-          case 'words':
-            return `${progress}%`;
-          case 'accuracy':
-            return `${progress}%`;
-          default:
-            return dailyGoal;
-        }
-      }
-      return dailyXP || dailyGoal;
-    };
+  const SubjectCard: React.FC<SubjectCardProps> = ({ title, progress, details, studentId, platform, dailyXP, dailyGoal, goalColor, displayPercentOverride }) => {
+    // Ensure progress is a number
+    const progressNum = typeof progress === 'string' ? parseFloat(progress) : progress;
+    const isMathAcademy = platform === 'math-academy';
+    const isMembean = platform === 'membean';
+    // Use the override for the displayed percent if provided
+    const displayPercent = typeof displayPercentOverride === 'number' && !isNaN(displayPercentOverride)
+      ? `${Math.round(displayPercentOverride)}%`
+      : (isNaN(progressNum) ? '0%' : `${Math.round(progressNum)}%`);
+    // Cap the progress bar at 100
+    const progressBarValue = isNaN(progressNum) ? 0 : Math.min(progressNum, 100);
+    // Color logic: green if progress is 100 or more for Math Academy and Membean
+    const progressColor = (isMathAcademy || isMembean)
+      ? (displayPercentOverride !== undefined ? displayPercentOverride >= 100 : progressNum >= 100) ? '#4CAF50' : '#f44336'
+      : (progressNum >= 80 ? '#4CAF50' : progressNum >= 60 ? '#FFA726' : '#f44336');
 
     return (
       <Card 
@@ -292,12 +337,12 @@ const Dashboard: React.FC<DashboardProps> = ({ students, loading, error }) => {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          width: 220,
-          minWidth: 220,
-          maxWidth: 220,
-          height: 300,
-          minHeight: 300,
-          maxHeight: 300,
+          width: 320,
+          minWidth: 320,
+          maxWidth: 320,
+          height: 340,
+          minHeight: 340,
+          maxHeight: 340,
           background: `linear-gradient(145deg, ${theme.palette.background.paper} 0%, ${theme.palette.background.default} 100%)`,
           boxShadow: `0 8px 32px rgba(0, 0, 0, 0.08)`,
           borderRadius: 2,
@@ -337,7 +382,7 @@ const Dashboard: React.FC<DashboardProps> = ({ students, loading, error }) => {
           />
           <CircularProgress
             variant="determinate"
-            value={progress > 100 ? 100 : progress}
+            value={progressBarValue}
             size={100}
             thickness={5}
             sx={{
@@ -362,9 +407,12 @@ const Dashboard: React.FC<DashboardProps> = ({ students, loading, error }) => {
               sx={{
                 fontWeight: 'bold',
                 color: progressColor,
+                textAlign: 'center',
+                fontSize: '1.1rem',
+                lineHeight: 1.2
               }}
             >
-              {`${Math.round(progress)}%`}
+              {platform === 'alpharead' && dailyGoal && (typeof dailyGoal === 'string') ? dailyGoal : displayPercent}
             </Typography>
           </Box>
         </Box>
@@ -390,7 +438,7 @@ const Dashboard: React.FC<DashboardProps> = ({ students, loading, error }) => {
             textAlign: 'center',
           }}
         >
-          {getDisplayValue()}
+          {isMathAcademy ? (dailyXP || '') : (dailyXP || dailyGoal)}
         </Typography>
 
         <Divider sx={{ width: '50%', my: 1, borderColor: `${progressColor}30` }} />
@@ -440,6 +488,14 @@ const Dashboard: React.FC<DashboardProps> = ({ students, loading, error }) => {
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
+      {/* Last Scrape Timestamp */}
+      {lastScrape && (
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="subtitle2" color="text.secondary">
+            Last updated: {lastScrape}
+          </Typography>
+        </Box>
+      )}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           ClearClass
@@ -508,7 +564,8 @@ const Dashboard: React.FC<DashboardProps> = ({ students, loading, error }) => {
                     return (
                       <SubjectCard
                         title="Math Academy"
-                        progress={calculateProgress(student, 'math-academy')}
+                        progress={Math.min(calculateProgress(student, 'math-academy'), 100)}
+                        displayPercentOverride={calculateProgress(student, 'math-academy')}
                         details={details}
                         studentId={student.id}
                         platform="math-academy"
@@ -524,44 +581,97 @@ const Dashboard: React.FC<DashboardProps> = ({ students, loading, error }) => {
                     const details = [
                       `Level: ${student.current_data?.level || 'Not Started'}`,
                       `Accuracy: ${student.tabs_data?.Reports?.accuracy || '0%'}`,
+                      `Minutes Trained: ${student.tabs_data?.Reports?.minutes_trained ?? 0}`,
                       `Last Trained: ${student.current_data?.last_trained || 'Never'}`
                     ].join('\n');
-                    const progress = calculateProgress(student, 'membean');
-                    const goalColor = progress >= 100 ? '#4CAF50' : '#f44336';
                     return (
                       <SubjectCard
                         title="Membean"
-                        progress={progress}
+                        progress={Math.min(calculateProgress(student, 'membean'), 100)}
+                        displayPercentOverride={calculateProgress(student, 'membean')}
                         details={details}
                         studentId={student.id}
                         platform="membean"
                         dailyGoal={getDisplayValue(student, 'membean')}
-                        goalColor={goalColor}
                       />
                     );
                   })()}
                 </Box>
 
-                {/* Fast Math Card */}
-                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'stretch' }}>
-                  <SubjectCard
-                    title="Fast Math"
-                    progress={0}
-                    details={"Coming soon!"}
-                    studentId={student.id}
-                    platform="fast-math"
-                  />
-                </Box>
-
                 {/* AlphaRead Card */}
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'stretch' }}>
-                  <SubjectCard
-                    title="AlphaRead"
-                    progress={0}
-                    details={"Coming soon!"}
-                    studentId={student.id}
-                    platform="alpharead"
-                  />
+                  {(() => {
+                    const alpha = student.alpharead;
+                    let progress = 0;
+                    let details = "No AlphaRead data";
+                    let goalColor = '#f44336'; // red by default
+                    let customLabel = undefined;
+                    let customProgressColor = undefined;
+                    // Get AlphaRead metric settings
+                    const alphaMetric = metricSettings.alpharead?.metric;
+                    const alphaTarget = metricSettings.alpharead?.target;
+                    // Check if practiced today (for label)
+                    let practicedToday = false;
+                    if (alpha && alpha.last_active) {
+                      const today = new Date();
+                      const todayStr = today.toLocaleString('en-US', { month: 'short', day: 'numeric' });
+                      practicedToday = alpha.last_active.toLowerCase().includes(todayStr.toLowerCase());
+                    }
+                    if (alpha) {
+                      details = [
+                        `Level: ${alpha.reading_level}`,
+                        `Avg Score: ${alpha.average_score}`,
+                        `Sessions: ${alpha.total_sessions}`,
+                        `Last Active: ${alpha.last_active}`,
+                        `Time Reading: ${alpha.time_reading}`,
+                      ].join('\n');
+                    }
+                    // Always show the practice status as the label
+                    customLabel = practicedToday ? 'Practiced Today: Yes' : 'Practiced Today: No';
+
+                    // Color logic: green if student met the selected metric, red if not
+                    let metricMet = false;
+                    if (alpha) {
+                      switch (alphaMetric) {
+                        case 'avgScore':
+                          metricMet = (parseFloat(alpha.average_score) || 0) >= (typeof alphaTarget === 'number' ? alphaTarget : 0);
+                          break;
+                        case 'sessions':
+                          metricMet = (parseInt(alpha.total_sessions) || 0) >= (typeof alphaTarget === 'number' ? alphaTarget : 0);
+                          break;
+                        case 'timeReading': {
+                          let minutes = 0;
+                          if (alpha.time_reading) {
+                            const hMatch = alpha.time_reading.match(/(\d+)h/);
+                            const mMatch = alpha.time_reading.match(/(\d+)m/);
+                            minutes = (hMatch ? parseInt(hMatch[1]) : 0) * 60 + (mMatch ? parseInt(mMatch[1]) : 0);
+                          }
+                          metricMet = minutes >= (typeof alphaTarget === 'number' ? alphaTarget : 0);
+                          break;
+                        }
+                        case 'practicedToday':
+                          metricMet = (alphaTarget === 'yes' && practicedToday) || (alphaTarget === 'no' && !practicedToday);
+                          break;
+                        default:
+                          metricMet = false;
+                      }
+                    }
+                    progress = metricMet ? 100 : 0;
+                    goalColor = metricMet ? '#4CAF50' : '#f44336';
+                    customProgressColor = goalColor;
+
+                    return (
+                      <SubjectCard
+                        title="AlphaRead"
+                        progress={progress}
+                        details={details}
+                        studentId={student.id}
+                        platform="alpharead"
+                        goalColor={customProgressColor || goalColor}
+                        dailyGoal={customLabel}
+                      />
+                    );
+                  })()}
                 </Box>
               </Box>
             </Paper>

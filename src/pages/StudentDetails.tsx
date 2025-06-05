@@ -31,6 +31,7 @@ import {
 import ScraperDataService from '../services/ScraperDataService';
 import MembeanStudentPage from '../components/MembeanStudentPage';
 import { MembeanRawData, MembeanDisplayData } from '../types/types';
+import AlphaReadStudentPage from '../components/AlphaReadStudentPage';
 
 type StudentData = BaseStudentData;
 
@@ -105,14 +106,7 @@ const MembeanPageWrapper = ({ student }: { student: MembeanRawData }) => {
   };
 
   return (
-    <>
-      <Box sx={{ mb: 2 }}>
-        <Typography variant="subtitle2" color="text.secondary">
-          Data as of: {dataDate}
-        </Typography>
-      </Box>
-      <MembeanStudentPage student={transformedStudent} improvedReadability />
-    </>
+    <MembeanStudentPage student={transformedStudent} />
   );
 };
 
@@ -342,6 +336,17 @@ const MathAcademyPage = ({ student }: { student: StudentData }) => {
   );
 };
 
+const AlphaReadPage = ({ student }: { student: StudentData }) => {
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, []);
+
+  return (
+    <AlphaReadStudentPage student={student} />
+  );
+};
+
 const StudentDetails: React.FC<StudentDetailsProps> = ({ students }) => {
   const { studentId, platform } = useParams<{ studentId: string; platform: string }>();
   const navigate = useNavigate();
@@ -365,6 +370,8 @@ const StudentDetails: React.FC<StudentDetailsProps> = ({ students }) => {
         return <MembeanPageWrapper student={student} />;
       case 'math-academy':
         return <MathAcademyPage student={student} />;
+      case 'alpharead':
+        return <AlphaReadPage student={student} />;
       default:
         return <Typography>Platform not found</Typography>;
     }

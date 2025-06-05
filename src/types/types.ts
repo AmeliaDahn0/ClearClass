@@ -206,6 +206,7 @@ export interface StudentData {
     minutesTrained: number;
   };
   weekly_minutes?: Array<{ date: string | null; minutes: number | null }>;
+  alpharead?: any;
 }
 
 // Scraper Data Service Types

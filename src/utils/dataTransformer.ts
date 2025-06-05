@@ -161,7 +161,8 @@ export const transformData = (
   mathAcademyData: any[],
   membeanDailyData: MembeanData,
   membeanWeeklyData: MembeanData,
-  membeanDailyDataArray: MembeanData[]
+  membeanDailyDataArray: MembeanData[],
+  alphaReadData: any
 ): StudentData[] => {
   // Create a map to store all unique students, using lowercase normalized name as key
   const studentsMap = new Map<string, StudentData>();
@@ -516,6 +517,26 @@ export const transformData = (
     });
     studentData.weekly_minutes = weekly_minutes;
   });
+
+  // --- AlphaRead Integration ---
+  if (alphaReadData && Array.isArray(alphaReadData.students)) {
+    alphaReadData.students.forEach((alphaStudent: any) => {
+      // Try to match by name or email
+      const normalizedName = normalizeStudentName(alphaStudent.email.split('@')[0].replace('.', ' '));
+      const mapKey = normalizedName.toLowerCase();
+      const student = studentsMap.get(mapKey);
+      if (student) {
+        student.alpharead = alphaStudent; // Attach all AlphaRead data
+        // Optionally, add a summary for the card:
+        student.subjects['AlphaRead'] = {
+          progress: parseFloat(alphaStudent.average_score) || 0,
+          isCoaching: false,
+          sessionTime: alphaStudent.time_reading,
+          details: `Level: ${alphaStudent.reading_level}\nAvg Score: ${alphaStudent.average_score}\nSessions: ${alphaStudent.total_sessions}\nLast Active: ${alphaStudent.last_active}`
+        };
+      }
+    });
+  }
 
   // Convert map to array and sort by name
   const allStudents = Array.from(studentsMap.values())
